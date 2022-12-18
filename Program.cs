@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 
 namespace Questao01
@@ -7,24 +8,23 @@ namespace Questao01
     {
         static void Main(string[] args)
         {
-            int[,] tabelaDistancias = new int[5,5];
-            int[] percurso;
+
+            // int[][] tabelaDistancias;
+            // int[] percurso;
             int distanciaPercorrida = 0;
             string distanciasIndividuais = "";
+            
+            string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-            for (int i = 0; i < 5; i++)
-            {
-                for (int j = i + 1; j < 5; j++)
-                {
-                    Console.WriteLine($"Informe a distância da cidade {i + 1} à cidade {j + 1}");
-                    int.TryParse(Console.ReadLine(), out tabelaDistancias[i, j]);
-                    tabelaDistancias[j, i] = tabelaDistancias[i, j];
-                }
-            }
+            var tabelaDistancias = File.ReadAllLines($"{desktop}\\matriz.txt")
+                                    .Select(l => l.Split(',').Select(i => int.Parse(i)).ToArray())
+                                    .ToArray();
 
-            Console.Write("Informe as cidades do percurso separadas por vírgula:");
-            var entradaUsuario = Console.ReadLine()!.Split(',');
-            percurso = entradaUsuario.Select(x => int.Parse(x)).ToArray();
+            // var percurso = File.ReadAllLines($"{desktop}\\caminho.txt")
+            //                 .Select(l => l.Split(',').Select(i => int.Parse(i)).ToArray());
+
+            var percurso = File.ReadAllLines($"{desktop}\\caminho.txt")[0].Split(",")
+                            .Select(i => int.Parse(i)).ToArray();
 
             Console.Write($"A distância percorrida foi de: ");
 
@@ -32,8 +32,8 @@ namespace Questao01
             {
                 var cidadeAtual = percurso[i] - 1;
                 var proximaCidade = percurso[i+1] - 1;
-                distanciaPercorrida += tabelaDistancias[cidadeAtual, proximaCidade];
-                distanciasIndividuais += $" {tabelaDistancias[cidadeAtual, proximaCidade]} +";
+                distanciaPercorrida += tabelaDistancias[cidadeAtual][proximaCidade];
+                distanciasIndividuais += $" {tabelaDistancias[cidadeAtual][proximaCidade]} +";
             }
 
             Console.Write($"{distanciasIndividuais.Substring(0, distanciasIndividuais.Length - 1)}= {distanciaPercorrida} Km");
