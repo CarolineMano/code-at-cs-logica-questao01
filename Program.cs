@@ -8,9 +8,6 @@ namespace Questao01
     {
         static void Main(string[] args)
         {
-
-            // int[][] tabelaDistancias;
-            // int[] percurso;
             int distanciaPercorrida = 0;
             string distanciasIndividuais = "";
             
@@ -19,9 +16,6 @@ namespace Questao01
             var tabelaDistancias = File.ReadAllLines($"{desktop}\\matriz.txt")
                                     .Select(l => l.Split(',').Select(i => int.Parse(i)).ToArray())
                                     .ToArray();
-
-            // var percurso = File.ReadAllLines($"{desktop}\\caminho.txt")
-            //                 .Select(l => l.Split(',').Select(i => int.Parse(i)).ToArray());
 
             var percurso = File.ReadAllLines($"{desktop}\\caminho.txt")[0].Split(",")
                             .Select(i => int.Parse(i)).ToArray();
