@@ -15,44 +15,42 @@ namespace Questao01
             int distanciaPercorrida = 0;
             string distanciasIndividuais = "";
             string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            var percurso = new List<int>();
-            var tabelaDistancias = new List<List<int>>();
+            int[] percurso;
+            int[][] tabelaDistancias;
 
             CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                HasHeaderRecord = false,
-                Delimiter = ","
+                HasHeaderRecord = false
             };
 
             using (var leitorMatriz = new StreamReader($"{desktop}\\matriz.txt"))
-            using (var csv = new CsvReader(leitorMatriz, config))
+            using (var csv = new CsvParser(leitorMatriz, config))
             {
-                while (csv.Read())
+                if (!csv.Read())
+                    return;
+
+                var numColunas = csv.Record!.Length;
+                tabelaDistancias = new int[numColunas][];
+
+                for (int i = 0; i < numColunas; i++)
                 {
-                    var lista = new List<int>();
-                    for (int i = 0; csv.TryGetField<int>(i, out var cidade); i++)
-                    {
-                        lista.Add(cidade);            
-                    }
-                    tabelaDistancias.Add(lista);
+                    tabelaDistancias[i] = csv.Record.Select(int.Parse).ToArray();
+                    csv.Read();
                 }
             }
 
             using (var leitorCaminho = new StreamReader($"{desktop}\\caminho.txt"))
-            using (var csv = new CsvReader(leitorCaminho, config))
+            using (var csv = new CsvParser(leitorCaminho, config))
             {
-                while (csv.Read())
-                {
-                    for (int i = 0; csv.TryGetField<int>(i, out var cidade); i++)
-                    {
-                        percurso.Add(cidade);
-                    }
-                }
+                if (!csv.Read())
+                    return;
+
+                percurso = csv.Record!.Select(int.Parse).ToArray();
             }
 
             Console.Write($"A distância percorrida foi de: ");
 
-            for (int i = 0; i < percurso.Count - 1; i++)
+            for (int i = 0; i < percurso.Length - 1; i++)
             {
                 var cidadeAtual = percurso[i] - 1;
                 var proximaCidade = percurso[i + 1] - 1;
